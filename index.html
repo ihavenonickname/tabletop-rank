@@ -10,21 +10,18 @@
     text-align: center;
 }
 
-td {
-    text-align: center;
-    min-width: 90px;
+#tabela {
+    margin: 0 auto;
 }
 
 td {
+    text-align: center;
+    min-width: 90px;
     padding: 10px 0;
 }
 
 tbody tr:hover {
     background-color: #f5f5f5;
-}
-
-#tabela {
-    margin: 0 auto;
 }
 
 thead td {
@@ -73,12 +70,12 @@ const ordenador = attr => (a, b) => typeof a[attr] === 'string'
                                     ? a[attr] > b[attr]
                                     : a[attr] < b[attr]
 
-const linha = celulas => {
+const linha = textos => {
     const tr = document.createElement('tr')
 
-    celulas.map(x => {
+    textos.map(texto => {
         const td = document.createElement('td')
-        td.textContent = x
+        td.textContent = texto
         return td
     }).forEach(tr.appendChild.bind(tr))
 
