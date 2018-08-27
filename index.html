@@ -1,0 +1,104 @@
+<!doctype html>
+
+<meta charset="UTF-8">
+
+<style>
+body {
+    width: 960px;
+}
+
+#content {
+    margin: 0 auto;
+}
+
+#td-vitorias, #td-aproveitamento {
+    cursor: pointer;
+    user-select: none;
+}
+
+#td-vitorias:hover, #td-aproveitamento:hover {
+    background-color: gainsboro;
+}
+</style>
+
+<title>Ranking do Table Top</title>
+
+<div id="conteudo">
+    <h1>Ranking do Table Top</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Jogador</td>
+                <td>Jogos</td>
+                <td id="td-vitorias" title="Ordenar por vitórias">Vitórias</td>
+                <td id="td-aproveitamento" title="Ordenar por aproveitamento">Aproveitamento</td>
+            </tr>
+        </thead>
+        <tbody id="corpo">
+        </tbody>
+    </table>
+</div>
+
+<script>
+const aproveitamento = ({ jogos, vitorias }) => vitorias / jogos
+
+const dados = [
+    {
+        nome: 'Gabriel',
+        jogos: 8,
+        vitorias: 2
+    },
+    {
+        nome: 'Fred',
+        jogos: 1,
+        vitorias: 1
+    }
+].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
+
+const ordenador = attr => (a, b) => b[attr] - a[attr]
+
+const linha = celulas => {
+    const tr = document.createElement('tr')
+
+    celulas.map(x => {
+        const td = document.createElement('td')
+        td.textContent = x
+        return td
+    }).forEach(tr.appendChild.bind(tr))
+
+    return tr
+}
+
+const popularTabela = dados => {
+    const tbody = document.getElementById('corpo')
+
+    for (const x of dados) {
+        tbody.appendChild(linha([
+            x.nome,
+            x.jogos,
+            x.vitorias,
+            x.aproveitamento.toFixed(2) + '%'
+        ]))
+    }
+}
+
+const limparTabela = () => {
+    const tbody = document.getElementById('corpo')
+    tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
+}
+
+window.addEventListener('load', () => {
+    popularTabela(dados.sort(ordenador('vitorias')))
+})
+
+document.getElementById('td-vitorias').addEventListener('click', () => {
+    limparTabela()
+    popularTabela(dados.sort(ordenador('vitorias')))
+})
+
+document.getElementById('td-aproveitamento').addEventListener('click', () => {
+    limparTabela()
+    popularTabela(dados.sort(ordenador('aproveitamento')))
+})
+</script>
