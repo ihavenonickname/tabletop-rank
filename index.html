@@ -61,8 +61,23 @@ const dados = [
     },
     {
         nome: 'Fred',
+        jogos: 5,
+        vitorias: 0
+    },
+    {
+        nome: 'Felipe',
         jogos: 1,
+        vitorias: 0
+    },
+    {
+        nome: 'Nico',
+        jogos: 4,
         vitorias: 1
+    },
+    {
+        nome: 'Igor',
+        jogos: 8,
+        vitorias: 4
     }
 ].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
 
