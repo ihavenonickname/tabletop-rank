@@ -26,14 +26,11 @@ tbody tr:hover {
     margin: 0 auto;
 }
 
-#td-vitorias, #td-aproveitamento {
+thead td {
     cursor: pointer;
     user-select: none;
 }
 
-#td-vitorias:hover, #td-aproveitamento:hover {
-    background-color: gainsboro;
-}
 </style>
 
 <title>Table Top - DigitalDesk</title>
@@ -44,10 +41,10 @@ tbody tr:hover {
     <table id="tabela">
         <thead>
             <tr>
-                <td>Jogador</td>
-                <td>Jogos</td>
-                <td id="td-vitorias" title="Ordenar por vitórias">Vitórias</td>
-                <td id="td-aproveitamento" title="Ordenar por aproveitamento">Aproveitamento</td>
+                <td ordenacao="nome">Jogador</td>
+                <td ordenacao="jogos">Jogos</td>
+                <td ordenacao="vitorias">Vitórias</td>
+                <td ordenacao="aproveitamento">Aproveitamento</td>
             </tr>
         </thead>
         <tbody id="corpo">
@@ -71,7 +68,9 @@ const dados = [
     }
 ].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
 
-const ordenador = attr => (a, b) => b[attr] - a[attr]
+const ordenador = attr => (a, b) => typeof a[attr] === 'string'
+                                    ? a[attr] > b[attr]
+                                    : a[attr] < b[attr]
 
 const linha = celulas => {
     const tr = document.createElement('tr')
@@ -103,17 +102,15 @@ const limparTabela = () => {
     tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
 }
 
+document.querySelectorAll('thead td').forEach(td => {
+    td.addEventListener('click', () => {
+        limparTabela()
+        const prop = td.getAttribute('ordenacao')
+        popularTabela(dados.sort(ordenador(prop)))
+    })
+})
+
 window.addEventListener('load', () => {
     popularTabela(dados.sort(ordenador('vitorias')))
-})
-
-document.getElementById('td-vitorias').addEventListener('click', () => {
-    limparTabela()
-    popularTabela(dados.sort(ordenador('vitorias')))
-})
-
-document.getElementById('td-aproveitamento').addEventListener('click', () => {
-    limparTabela()
-    popularTabela(dados.sort(ordenador('aproveitamento')))
 })
 </script>
