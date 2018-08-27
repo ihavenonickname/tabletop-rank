@@ -1,0 +1,1 @@
+Acesse em https://ihavenonickname.github.io/tabletop-rank/
