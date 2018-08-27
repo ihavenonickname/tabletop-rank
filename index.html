@@ -54,41 +54,21 @@ thead td {
 const aproveitamento = ({ jogos, vitorias }) => vitorias / jogos
 
 const dados = [
-    {
-        nome: 'Gabriel',
-        jogos: 8,
-        vitorias: 2
-    },
-    {
-        nome: 'Fred',
-        jogos: 5,
-        vitorias: 0
-    },
-    {
-        nome: 'Felipe',
-        jogos: 1,
-        vitorias: 0
-    },
-    {
-        nome: 'Nico',
-        jogos: 4,
-        vitorias: 1
-    },
-    {
-        nome: 'Igor',
-        jogos: 8,
-        vitorias: 4
-    }
+    { nome: 'Gabriel', jogos: 8, vitorias: 2 },
+    { nome: 'Fred', jogos: 5, vitorias: 0 },
+    { nome: 'Felipe', jogos: 1, vitorias: 0 },
+    { nome: 'Nico', jogos: 4, vitorias: 1 },
+    { nome: 'Igor', jogos: 8, vitorias: 4 }
 ].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
 
 const ordenador = attr => (a, b) => typeof a[attr] === 'string'
                                     ? a[attr] > b[attr]
                                     : a[attr] < b[attr]
 
-const linha = textos => {
+const criarLinha = textosCelulas => {
     const tr = document.createElement('tr')
 
-    textos.map(texto => {
+    textosCelulas.map(texto => {
         const td = document.createElement('td')
         td.textContent = texto
         return td
@@ -101,7 +81,7 @@ const popularTabela = dados => {
     const tbody = document.getElementById('corpo')
 
     for (const x of dados) {
-        tbody.appendChild(linha([
+        tbody.appendChild(criarLinha([
             x.nome,
             x.jogos,
             x.vitorias,
@@ -115,15 +95,15 @@ const limparTabela = () => {
     tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
 }
 
-document.querySelectorAll('thead td').forEach(td => {
-    td.addEventListener('click', () => {
-        limparTabela()
-        const prop = td.getAttribute('ordenacao')
-        popularTabela(dados.sort(ordenador(prop)))
-    })
-})
-
 window.addEventListener('load', () => {
+    document.querySelectorAll('thead td').forEach(td => {
+        td.addEventListener('click', () => {
+            limparTabela()
+            const prop = td.getAttribute('ordenacao')
+            popularTabela(dados.sort(ordenador(prop)))
+        })
+    })
+
     popularTabela(dados.sort(ordenador('vitorias')))
 })
 </script>
