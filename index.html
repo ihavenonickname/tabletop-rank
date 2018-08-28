@@ -37,7 +37,7 @@ thead td {
 <div id="conteudo">
     <h1>Ticket to ride</h1>
 
-    <table class="centralizar">
+    <table id="placar" class="centralizar">
         <thead>
             <tr>
                 <td ordenacao="nome">Jogador</td>
@@ -46,13 +46,13 @@ thead td {
                 <td ordenacao="aproveitamento">Aproveitamento</td>
             </tr>
         </thead>
-        <tbody id="corpo-placar">
+        <tbody>
         </tbody>
     </table>
 
     <hr>
 
-    <table class="centralizar">
+    <table id="historico" class="centralizar">
         <thead>
             <tr>
                 <td>Data</td>
@@ -60,7 +60,7 @@ thead td {
                 <td>Pontos</td>
             </tr>
         </thead>
-        <tbody id="corpo-historico">
+        <tbody>
         </tbody>
     </table>
 </div>
@@ -127,7 +127,7 @@ const criarLinha = textosCelulas => {
 }
 
 const popularPlacar = placar => {
-    const tbody = document.getElementById('corpo-placar')
+    const tbody = document.querySelector('#placar tbody')
 
     for (const x of placar) {
         tbody.appendChild(criarLinha([
@@ -140,7 +140,7 @@ const popularPlacar = placar => {
 }
 
 const popularHistorico = historico => {
-    const tbody = document.getElementById('corpo-historico')
+    const tbody = document.querySelector('#historico tbody')
 
     for (const jogo of historico) {
         const resultados = jogo.resultados.sort(ordenador(1))
@@ -159,9 +159,9 @@ const popularHistorico = historico => {
 }
 
 window.addEventListener('load', () => {
-    document.querySelectorAll('thead td').forEach(td => {
+    document.querySelectorAll('#placar td').forEach(td => {
         td.addEventListener('click', () => {
-            const tbody = document.getElementById('corpo-placar')
+            const tbody = document.querySelector('#placar tbody')
             tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
 
             const prop = td.getAttribute('ordenacao')
