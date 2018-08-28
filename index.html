@@ -18,9 +18,15 @@
     margin: 0 auto;
 }
 
-td {
+#placar td {
     text-align: center;
-    min-width: 90px;
+    min-width: 120px;
+    padding: 10px 0;
+}
+
+#historico td {
+    text-align: center;
+    min-width: 75px;
     padding: 10px 0;
 }
 
@@ -52,6 +58,8 @@ thead td {
                 <td ordenacao="nome">Jogador</td>
                 <td ordenacao="jogos">Jogos</td>
                 <td ordenacao="vitorias">Vitórias</td>
+                <td ordenacao="totalPontos">Total de pontos</td>
+                <td ordenacao="mediaPontos">Média de pontos</td>
                 <td ordenacao="aproveitamento">Aproveitamento</td>
             </tr>
         </thead>
@@ -93,10 +101,11 @@ const historico = [
 ]
 
 const gerarPlacar = () => {
-    const inc = (mapa, chave) => mapa.set(chave, mapa.get(chave) + 1)
+    const inc = (mapa, chave, x) => mapa.set(chave, mapa.get(chave) + (x || 1))
 
-    const agregado = new Map()
+    const contadorVitorias = new Map()
     const contadorJogos = new Map()
+    const contadorPontos = new Map()
 
     for (const jogo of historico) {
         let nomeGanhador = null
@@ -108,8 +117,8 @@ const gerarPlacar = () => {
                 nomeGanhador = nome
             }
 
-            if (!agregado.has(nome)) {
-                agregado.set(nome, 0)
+            if (!contadorVitorias.has(nome)) {
+                contadorVitorias.set(nome, 0)
             }
 
             if (contadorJogos.has(nome)) {
@@ -117,16 +126,29 @@ const gerarPlacar = () => {
             } else {
                 contadorJogos.set(nome, 1)
             }
+
+            if (contadorPontos.has(nome)) {
+                inc(contadorPontos, nome, pontos)
+            } else {
+                contadorPontos.set(nome, pontos)
+            }
         }
 
-        inc(agregado, nomeGanhador)
+        inc(contadorVitorias, nomeGanhador)
     }
 
     const dados = []
 
-    for (const [nome, vitorias] of agregado.entries()) {
+    for (const [nome, vitorias] of contadorVitorias.entries()) {
         const jogos = contadorJogos.get(nome)
-        dados.push({ nome, vitorias, jogos, aproveitamento: vitorias / jogos * 100 })
+        dados.push({
+            nome,
+            vitorias,
+            jogos,
+            totalPontos: contadorPontos.get(nome),
+            mediaPontos: contadorPontos.get(nome) / jogos,
+            aproveitamento: vitorias / jogos * 100
+        })
     }
 
     return dados
@@ -154,6 +176,8 @@ const popularPlacar = placar => {
             x.nome,
             x.jogos,
             x.vitorias,
+            x.totalPontos,
+            x.mediaPontos.toFixed(1),
             x.aproveitamento.toFixed(2) + '%'
         ]))
     }
