@@ -82,7 +82,10 @@ const historico = [
 ]
 
 const gerarPlacar = () => {
+    const inc = (mapa, chave) => mapa.set(chave, mapa.get(chave) + 1)
+
     const agregado = new Map()
+    const contadorJogos = new Map()
 
     for (const jogo of historico) {
         let nomeGanhador = null
@@ -97,15 +100,21 @@ const gerarPlacar = () => {
             if (!agregado.has(nome)) {
                 agregado.set(nome, 0)
             }
+
+            if (contadorJogos.has(nome)) {
+                inc(contadorJogos, nome)
+            } else {
+                contadorJogos.set(nome, 1)
+            }
         }
 
-        agregado.set(nomeGanhador, agregado.get(nomeGanhador) + 1)
+        inc(agregado, nomeGanhador)
     }
 
-    const jogos = historico.length
     const dados = []
 
     for (const [nome, vitorias] of agregado.entries()) {
+        const jogos = contadorJogos.get(nome)
         dados.push({ nome, vitorias, jogos, aproveitamento: vitorias / jogos * 100 })
     }
 
