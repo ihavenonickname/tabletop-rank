@@ -30,6 +30,11 @@ thead td {
     font-weight: bold;
 }
 
+.jogo {
+    margin-bottom: 30px;
+    border: 1px solid;
+}
+
 </style>
 
 <title>Table Top - DigitalDesk</title>
@@ -52,17 +57,19 @@ thead td {
 
     <hr>
 
-    <table id="historico" class="centralizar">
-        <thead>
-            <tr>
-                <td>Data</td>
-                <td>Nome</td>
-                <td>Pontos</td>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <section id="historico">
+        <table class="centralizar jogo">
+            <caption></caption>
+            <thead>
+                <tr>
+                    <td>Nome</td>
+                    <td>Pontos</td>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </section>
 </div>
 
 <script>
@@ -149,22 +156,28 @@ const popularPlacar = placar => {
 }
 
 const popularHistorico = historico => {
-    const tbody = document.querySelector('#historico tbody')
+    const original = document.querySelector('.jogo')
+    const tabelas = [original]
 
-    for (const jogo of historico) {
-        const resultados = jogo.resultados.sort(ordenador(1))
-        let primeira = true
-        for (const [nome, pontos] of resultados) {
-            if (primeira) {
-                const linha = criarLinha([jogo.data, nome, pontos])
-                linha.firstElementChild.setAttribute('rowspan', resultados.length)
-                tbody.appendChild(linha)
-                primeira = false
-            } else {
-                tbody.appendChild(criarLinha([nome, pontos]))
-            }
+    while (tabelas.length < historico.length) {
+        tabelas.push(original.cloneNode(true))
+    }
+
+    for (let i = 0; i < tabelas.length; i++) {
+        const tabela = tabelas[i]
+        const jogo = historico[i]
+
+        tabela.querySelector('caption').innerText = jogo.data
+
+        const tbody = tabela.querySelector('tbody')
+
+        for (const [nome, pontos] of jogo.resultados.sort(ordenador(1))) {
+            tbody.appendChild(criarLinha([nome, pontos]))
         }
     }
+
+    const secaoHistorico = document.querySelector('#historico')
+    tabelas.reverse().forEach(x => secaoHistorico.appendChild(x))
 }
 
 window.addEventListener('load', () => {
