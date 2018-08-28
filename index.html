@@ -52,14 +52,24 @@ thead td {
 </div>
 
 <script>
+/*
+historico
+----------------
+27/08/2018
+igor 108
+gabriel 115
+fred 124
+----------------
+*/
+    
 const aproveitamento = ({ jogos, vitorias }) => vitorias / jogos
 
 const dados = [
-    { nome: 'Gabriel', jogos: 0, vitorias: 0 },
-    { nome: 'Fred', jogos: 0, vitorias: 0 },
+    { nome: 'Gabriel', jogos: 1, vitorias: 0 },
+    { nome: 'Fred', jogos: 1, vitorias: 0 },
     { nome: 'Felipe', jogos: 0, vitorias: 0 },
     { nome: 'Nico', jogos: 0, vitorias: 0 },
-    { nome: 'Igor', jogos: 0, vitorias: 0 }
+    { nome: 'Igor', jogos: 1, vitorias: 1 }
 ].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 || 0.0 }))
 
 const ordenador = attr => (a, b) => typeof a[attr] === 'string'
