@@ -55,11 +55,11 @@ thead td {
 const aproveitamento = ({ jogos, vitorias }) => vitorias / jogos
 
 const dados = [
-    { nome: 'Gabriel', jogos: 8, vitorias: 2 },
-    { nome: 'Fred', jogos: 6, vitorias: 0 },
-    { nome: 'Felipe', jogos: 1, vitorias: 0 },
-    { nome: 'Nico', jogos: 4, vitorias: 2 },
-    { nome: 'Igor', jogos: 8, vitorias: 4 }
+    { nome: 'Gabriel', jogos: 0, vitorias: 0 },
+    { nome: 'Fred', jogos: 0, vitorias: 0 },
+    { nome: 'Felipe', jogos: 0, vitorias: 0 },
+    { nome: 'Nico', jogos: 0, vitorias: 0 },
+    { nome: 'Igor', jogos: 0, vitorias: 0 }
 ].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
 
 const ordenador = attr => (a, b) => typeof a[attr] === 'string'
