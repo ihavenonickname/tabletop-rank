@@ -39,7 +39,6 @@ thead td {
 
     <table class="centralizar">
         <thead>
-            <caption>Placar</caption>
             <tr>
                 <td ordenacao="nome">Jogador</td>
                 <td ordenacao="jogos">Jogos</td>
@@ -50,18 +49,26 @@ thead td {
         <tbody id="corpo-placar">
         </tbody>
     </table>
+
+    <hr>
+
+    <table class="centralizar">
+        <thead>
+            <tr>
+                <td>Data</td>
+                <td>Nome</td>
+                <td>Pontos</td>
+            </tr>
+        </thead>
+        <tbody id="corpo-historico">
+        </tbody>
+    </table>
 </div>
 
 <script>
-/*
-historico
-----------------
-27/08/2018
-igor 108
-gabriel 115
-fred 124
-----------------
-*/
+const ordenador = attr => (a, b) => typeof a[attr] === 'string'
+                                ? a[attr] > b[attr]
+                                : a[attr] < b[attr]
 
 const historico = [
     {
@@ -132,11 +139,26 @@ const popularPlacar = placar => {
     }
 }
 
-window.addEventListener('load', () => {
-    const ordenador = attr => (a, b) => typeof a[attr] === 'string'
-                                        ? a[attr] > b[attr]
-                                        : a[attr] < b[attr]
+const popularHistorico = historico => {
+    const tbody = document.getElementById('corpo-historico')
 
+    for (const jogo of historico) {
+        const resultados = jogo.resultados.sort(ordenador(1))
+        let primeira = true
+        for (const [nome, pontos] of resultados) {
+            if (primeira) {
+                const linha = criarLinha([jogo.data, nome, pontos])
+                linha.firstElementChild.setAttribute('rowspan', resultados.length)
+                tbody.appendChild(linha)
+                primeira = false
+            } else {
+                tbody.appendChild(criarLinha([nome, pontos]))
+            }
+        }
+    }
+}
+
+window.addEventListener('load', () => {
     document.querySelectorAll('thead td').forEach(td => {
         td.addEventListener('click', () => {
             const tbody = document.getElementById('corpo-placar')
@@ -148,5 +170,7 @@ window.addEventListener('load', () => {
     })
 
     popularPlacar(placar.sort(ordenador('vitorias')))
+
+    popularHistorico(historico)
 })
 </script>
