@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-#tabela {
+.centralizar {
     margin: 0 auto;
 }
 
@@ -37,8 +37,9 @@ thead td {
 <div id="conteudo">
     <h1>Ticket to ride</h1>
 
-    <table id="tabela">
+    <table class="centralizar">
         <thead>
+            <caption>Placar</caption>
             <tr>
                 <td ordenacao="nome">Jogador</td>
                 <td ordenacao="jogos">Jogos</td>
@@ -46,7 +47,7 @@ thead td {
                 <td ordenacao="aproveitamento">Aproveitamento</td>
             </tr>
         </thead>
-        <tbody id="corpo">
+        <tbody id="corpo-placar">
         </tbody>
     </table>
 </div>
@@ -61,20 +62,50 @@ gabriel 115
 fred 124
 ----------------
 */
-    
-const aproveitamento = ({ jogos, vitorias }) => vitorias / jogos
 
-const dados = [
-    { nome: 'Gabriel', jogos: 1, vitorias: 0 },
-    { nome: 'Fred', jogos: 1, vitorias: 1 },
-    { nome: 'Felipe', jogos: 0, vitorias: 0 },
-    { nome: 'Nico', jogos: 0, vitorias: 0 },
-    { nome: 'Igor', jogos: 1, vitorias: 0 }
-].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 || 0.0 }))
+const historico = [
+    {
+        data: '27/08/2018',
+        resultados: [
+            ['Igor', 108],
+            ['Gabriel', 115],
+            ['Fred', 124]
+        ]
+    }
+]
 
-const ordenador = attr => (a, b) => typeof a[attr] === 'string'
-                                    ? a[attr] > b[attr]
-                                    : a[attr] < b[attr]
+const gerarPlacar = () => {
+    const agregado = new Map()
+
+    for (const jogo of historico) {
+        let nomeGanhador = null
+        let pontosGanhador = null
+
+        for (const [nome, pontos] of jogo.resultados) {
+            if (pontosGanhador === null || pontosGanhador < pontos) {
+                pontosGanhador = pontos
+                nomeGanhador = nome
+            }
+
+            if (!agregado.has(nome)) {
+                agregado.set(nome, 0)
+            }
+        }
+
+        agregado.set(nomeGanhador, agregado.get(nomeGanhador) + 1)
+    }
+
+    const jogos = historico.length
+    const dados = []
+
+    for (const [nome, vitorias] of agregado.entries()) {
+        dados.push({ nome, vitorias, jogos, aproveitamento: vitorias / jogos * 100 })
+    }
+
+    return dados
+}
+
+const placar = gerarPlacar()
 
 const criarLinha = textosCelulas => {
     const tr = document.createElement('tr')
@@ -88,10 +119,10 @@ const criarLinha = textosCelulas => {
     return tr
 }
 
-const popularTabela = dados => {
-    const tbody = document.getElementById('corpo')
+const popularPlacar = placar => {
+    const tbody = document.getElementById('corpo-placar')
 
-    for (const x of dados) {
+    for (const x of placar) {
         tbody.appendChild(criarLinha([
             x.nome,
             x.jogos,
@@ -101,20 +132,21 @@ const popularTabela = dados => {
     }
 }
 
-const limparTabela = () => {
-    const tbody = document.getElementById('corpo')
-    tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
-}
-
 window.addEventListener('load', () => {
+    const ordenador = attr => (a, b) => typeof a[attr] === 'string'
+                                        ? a[attr] > b[attr]
+                                        : a[attr] < b[attr]
+
     document.querySelectorAll('thead td').forEach(td => {
         td.addEventListener('click', () => {
-            limparTabela()
+            const tbody = document.getElementById('corpo-placar')
+            tbody.parentNode.replaceChild(tbody.cloneNode(false), tbody)
+
             const prop = td.getAttribute('ordenacao')
-            popularTabela(dados.sort(ordenador(prop)))
+            popularPlacar(placar.sort(ordenador(prop)))
         })
     })
 
-    popularTabela(dados.sort(ordenador('vitorias')))
+    popularPlacar(placar.sort(ordenador('vitorias')))
 })
 </script>
