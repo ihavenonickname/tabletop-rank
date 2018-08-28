@@ -60,7 +60,7 @@ const dados = [
     { nome: 'Felipe', jogos: 0, vitorias: 0 },
     { nome: 'Nico', jogos: 0, vitorias: 0 },
     { nome: 'Igor', jogos: 0, vitorias: 0 }
-].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 }))
+].map(x => ({ ...x, aproveitamento: aproveitamento(x) * 100 || 0.0 }))
 
 const ordenador = attr => (a, b) => typeof a[attr] === 'string'
                                     ? a[attr] > b[attr]
